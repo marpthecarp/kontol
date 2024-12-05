@@ -5,14 +5,9 @@ print("Welcome to the Car Simulator!")
 input("Press enter to start the simulation.")
 
 #inisial
-speed = 0
-warning_index = 0
+speed = 0 # speed = int
+warning_index = 0 # warning_index = int
 program = True
-
-#Info printing function
-def print_info(speed):
-    print("Speed =", speed)
-    print()
 
 #Engine starting and idling
 time.sleep(1)
@@ -23,30 +18,31 @@ def accelerating(acceleration):
     global speed
     speed += acceleration
     time.sleep(1)
-    print(speed)
+    print("speed =", speed)
+    print()
 
 #warning function
-def warning_acceleration(speed,acceleration):
-    speed += acceleration
+def warning_acceleration(speed, acceleration):
     time.sleep(1)
-    print_info(speed)
+    print("speed =", speed)
     print("Your vehicle is accelerating dangerously, slow down immediately.")
-    
+    print()
+
     global warning_index
     warning_index += 1
 
-    return speed
-
 #slowing down function
 def slowdown(speed):
-    while True:
+    global program
+    while program == True:
         speed -= 3
         if speed <= 0:
             speed = 0
-            return False
+            program = False
         time.sleep(1)
-        print_info(speed)
-
+        print("speed =", speed)
+        print()
+   
 #to keep the program running
 while program == True:
     acceleration = int(input("Input your vehicle's acceleration (in km /(h·s)): "))
@@ -57,15 +53,19 @@ while program == True:
         if warning_index >= 3:
             start_time = time.time()
             slowdown(speed)
+            break
 
         elif warning_index < 3:
-            if acceleration < 8:
-                print_info(accelerating(acceleration))
+            if acceleration < 8 and speed < 120:
+                accelerating(acceleration)
 
-            elif acceleration >= 8:
-                print_info(warning_acceleration(acceleration,warning_index))
+            elif acceleration >= 8 and speed < 120:
+                print("You can\'t accelerate your car because it\'s too fast")
+                break
 
             elif speed >= 120:
-                print_info(warning_acceleration(acceleration,warning_index))
-
+                speed += acceleration
+                warning_acceleration(speed, acceleration)
+                
+    
 print("Your vehicle has been stopped.")
